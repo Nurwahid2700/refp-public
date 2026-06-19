@@ -1,0 +1,234 @@
+/* --- src/pages/auth/Auth.css --- */
+@import url('https://fonts.googleapis.com/css2?family=Jersey+25&family=Inter:wght@400;500;600;700&display=swap');
+
+/* Wadah Utama: Penuh satu layar dan flex */
+.auth-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  /* Allow vertical scrolling on the container itself if needed */
+  overflow-y: auto;
+}
+
+/* SISI KIRI: Branding */
+.auth-brand {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background-color: #ffffff;
+  position: relative;
+  /* Ensure it sticks to the viewport height on desktop */
+  min-height: 100vh;
+}
+
+.auth-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  max-width: 450px;
+}
+
+.auth-line {
+  flex: 1;
+  height: 3px;
+  background-color: #1D2039;
+  border-radius: 2px;
+}
+
+.auth-title {
+  font-family: 'Jersey 25', cursive;
+  font-size: 85px;
+  color: #1D2039;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.auth-subtitle {
+  color: #50589F;
+  font-size: 18px;
+  margin-top: 12px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* SISI KANAN: Latar Belakang & Form */
+.auth-form-section {
+  flex: 1.2; /* Beri sedikit lebih banyak ruang untuk form */
+  position: relative;
+  background: linear-gradient(135deg, #1D2039 0%, #2b2e4a 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+/* Kotak Kaca */
+.auth-glass-card {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 50px 40px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  /* Use flex column to keep things tidy */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-glass-card h2 {
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.auth-glass-card p.auth-desc {
+  color: #a0a5d6;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.auth-input-group {
+  margin-bottom: 18px;
+  width: 100%;
+}
+
+.auth-input-group label {
+  display: block;
+  color: #e2e8f0;
+  font-size: 13px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 15px;
+  color: #1D2039;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.auth-input:focus {
+  border-color: #50589F;
+  box-shadow: 0 0 0 4px rgba(80, 88, 159, 0.2);
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #50589F 0%, #6872c4 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(80, 88, 159, 0.3);
+}
+
+.auth-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(80, 88, 159, 0.4);
+}
+
+.auth-btn:active {
+  transform: translateY(0);
+}
+
+.auth-switch-text {
+  text-align: center;
+  color: #a0a5d6;
+  font-size: 14px;
+  margin-top: 30px;
+}
+
+.auth-switch-text span {
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+  margin-left: 5px;
+  transition: color 0.2s;
+}
+
+.auth-switch-text span:hover {
+  color: #50589F;
+  text-decoration: underline;
+}
+
+/* Password Toggle Icon */
+.auth-password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.auth-password-toggle:hover {
+  opacity: 1;
+}
+
+/* Form container adjustments for better scrolling */
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* MEDIA QUERY: Responsif untuk HP */
+@media (max-width: 900px) {
+  .auth-container {
+    flex-direction: column;
+    /* Auto height allows scrolling past 100vh if content is long */
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .auth-brand {
+    min-height: auto;
+    padding: 50px 30px;
+  }
+
+  .auth-title {
+    font-size: 65px;
+  }
+
+  .auth-form-section {
+    min-height: auto;
+    padding: 40px 20px;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .auth-glass-card {
+    padding: 35px 25px;
+    max-height: none; /* remove max height so content doesn't overflow internal scroll */
+    overflow-y: visible;
+  }
+}

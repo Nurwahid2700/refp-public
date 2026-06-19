@@ -1,0 +1,150 @@
+/* --- Login.css --- */
+
+/* Memastikan halaman penuh dan tidak ada scroll yang bocor */
+.login-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff; /* Latar belakang putih */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Menyembunyikan sisa lingkaran yang keluar layar */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- BAGIAN ATAS (LOGO) --- */
+.logo-container {
+  margin-top: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Membuat logo REFP dengan garis di kiri dan kanan */
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 80%;
+  max-width: 600px;
+}
+
+.logo-line {
+  flex-grow: 1;
+  height: 6px;
+  background-color: #1D2039;
+  border-radius: 4px;
+}
+
+.logo-text {
+  font-family: 'Jersey 25', cursive; /* Font dari Google */
+  font-size: 80px;
+  color: #1D2039;
+  line-height: 1;
+  margin: 0;
+}
+
+.logo-subtext {
+  color: #50589F;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+/* --- BAGIAN BAWAH (LINGKARAN GRADASI) --- */
+.circle-background {
+  position: absolute;
+  bottom: -30vh; /* Digeser ke bawah agar jadi setengah lingkaran */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150vw; /* Sengaja dibuat sangat lebar */
+  height: 150vw;
+  max-width: 1200px;
+  max-height: 1200px;
+  border-radius: 50%;
+  /* Gradasi sesuai instruksi */
+  background: linear-gradient(to bottom, #1D2039, #50589F);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+}
+
+/* --- KOTAK FORM LOGIN (GLASSMORPHISM) --- */
+.login-glass-card {
+  margin-top: 15vh; /* Menyesuaikan posisi di dalam lingkaran */
+  width: 90%;
+  max-width: 350px;
+  padding: 40px 30px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px); /* Efek kaca buram */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  color: #ffffff;
+  font-size: 13px;
+  display: block;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: none;
+  background: #ffffff;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.forgot-password {
+  width: 100%;
+  text-align: right;
+  color: #ffffff;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 25px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+/* Tombol sesuai palet warna instruksimu */
+.btn-signin {
+  width: 100%;
+  padding: 12px;
+  background-color: #49678D; 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-signin:hover {
+  opacity: 0.9;
+}
+
+.register-link {
+  color: #ffffff;
+  font-size: 12px;
+  margin-top: 20px;
+  opacity: 0.8;
+}
+
+.register-link span {
+  font-weight: bold;
+  cursor: pointer;
+}

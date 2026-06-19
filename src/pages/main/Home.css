@@ -1,0 +1,47 @@
+/* --- src/pages/main/Home.css --- */
+.home-page {
+  width: 100%;
+  flex: 1; /* Mengisi ruang */
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Header & Search */
+.home-header { background-color: #1D2039; padding: 30px 20px 20px; color: white; }
+.home-logo { font-family: 'Jersey 25', cursive; font-size: 45px; margin: 0; line-height: 1; }
+.search-bar { width: 100%; padding: 12px; border-radius: 12px; border: none; margin-top: 15px; box-sizing: border-box; font-size: 13px; }
+
+/* Section Title & Buttons */
+.section-title { font-size: 15px; font-weight: 700; color: #1D2039; margin: 20px 20px 10px; }
+.btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 20px; }
+.grid-btn { background-color: #49678D; color: white; border: none; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; }
+
+/* Gradient Catalog */
+.gradient-section { background: linear-gradient(180deg, #1D2039 0%, #50589F 100%); padding: 20px 0; margin-top: 25px; }
+.section-title.white { color: white; margin-top: 0; }
+.horizontal-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px; scroll-behavior: smooth; }
+.horizontal-scroll::-webkit-scrollbar { display: none; }
+
+/* Event Card */
+.event-card { width: 150px; background: white; border-radius: 12px; padding: 10px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; }
+.event-img { width: 100%; height: 100px; background-color: #ccc; border-radius: 8px; margin-bottom: 10px; }
+.event-info h4 { margin: 0 0 5px; font-size: 13px; color: #1D2039;}
+.price { font-weight: bold; color: #49678D; font-size: 12px; margin: 0;}
+
+/* NAVBAR PROFESIONAL (Nempel di Bawah) */
+.bottom-nav {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  height: 65px;
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 50; /* Pastikan selalu di atas */
+}
+.nav-icon { font-size: 22px; cursor: pointer; opacity: 0.5; transition: 0.2s; }
+.nav-icon:hover { opacity: 1; transform: scale(1.1); }
