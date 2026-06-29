@@ -1,10 +1,11 @@
 // --- src/pages/Profile.jsx ---
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BadgeCheck, CalendarDays, User as UserIcon, LogOut, Settings, Phone, Mail, X, Camera, Loader2, Image as ImageIcon } from 'lucide-react';
+import { BadgeCheck, CalendarDays, User as UserIcon, LogOut, Settings, Phone, Mail, X, Camera, Loader2, Image as ImageIcon, AlertTriangle } from 'lucide-react';
 import { signOut, updateProfile } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { auth, db } from '../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { auth, db, storage } from '../../firebase';
 import Swal from 'sweetalert2';
 
 const Profile = () => {
@@ -14,6 +15,8 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState("");
   const [editImageURL, setEditImageURL] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [previewURL, setPreviewURL] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   // Mengambil data dari Firestore saat halaman dimuat
@@ -45,7 +48,7 @@ const Profile = () => {
     }
     
     // Cek apakah ada perubahan
-    if (editName === userData?.name && editImageURL === (userData?.photoURL || "")) {
+    if (editName === userData?.name && editImageURL === (userData?.photoURL || "") && !imageFile) {
       setIsEditing(false);
       return;
     }
@@ -56,7 +59,17 @@ const Profile = () => {
       const updateData = {};
       
       if (editName !== userData?.name) updateData.name = editName;
-      if (editImageURL !== (userData?.photoURL || "")) updateData.photoURL = editImageURL;
+
+      let finalPhotoURL = editImageURL;
+      if (imageFile) {
+        const fileRef = ref(storage, `profiles/${user.uid}_${Date.now()}`);
+        await uploadBytes(fileRef, imageFile);
+        finalPhotoURL = await getDownloadURL(fileRef);
+      }
+
+      if (finalPhotoURL !== (userData?.photoURL || "")) {
+        updateData.photoURL = finalPhotoURL;
+      }
 
       // Update Firestore jika ada data yang diubah
       if (Object.keys(updateData).length > 0) {
@@ -148,19 +161,28 @@ const Profile = () => {
               alt="Profile"
               className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-xl bg-slate-100"
             />
-            <div className="absolute bottom-2 right-2 bg-emerald-500 p-1.5 rounded-full border-2 border-white shadow-sm">
-              <BadgeCheck size={16} className="text-white" />
-            </div>
+            {userData?.isVerified && (
+              <div className="absolute bottom-2 right-2 bg-emerald-500 p-1.5 rounded-full border-2 border-white shadow-sm">
+                <BadgeCheck size={16} className="text-white" />
+              </div>
+            )}
           </div>
 
           <div className="text-center md:text-left flex-1 pt-2">
             <h1 className="text-3xl font-bold text-slate-800 mb-1">{userData?.name || 'User Name'}</h1>
             <p className="text-slate-500 mb-4">{userData?.email || 'email@example.com'}</p>
 
-            <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-sm font-semibold border border-emerald-100">
-              <BadgeCheck size={16} />
-              Verified Member
-            </div>
+            {userData?.isVerified ? (
+              <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-sm font-semibold border border-emerald-100">
+                <BadgeCheck size={16} />
+                Verified Member
+              </div>
+            ) : (
+              <div className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full text-sm font-semibold border border-slate-200">
+                <UserIcon size={16} />
+                Standard Member
+              </div>
+            )}
           </div>
 
           <div className="w-full md:w-auto mt-4 md:mt-0">
@@ -169,6 +191,8 @@ const Profile = () => {
                 setIsEditing(true);
                 setEditName(userData?.name || "");
                 setEditImageURL(userData?.photoURL || "");
+                setImageFile(null);
+                setPreviewURL("");
               }}
               className="w-full bg-[#1D2039] hover:bg-[#50589F] text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg hover:shadow-[#50589F]/30 cursor-pointer"
             >
@@ -176,6 +200,21 @@ const Profile = () => {
             </button>
           </div>
         </div>
+
+        {/* Warning Section for Inactive Accounts */}
+        {userData?.status === 'Inactive' && (
+          <div className="mt-6 bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-4 shadow-sm">
+            <div className="bg-red-100 p-2 rounded-xl text-red-600">
+              <AlertTriangle size={24} />
+            </div>
+            <div>
+              <h3 className="font-bold text-red-800">Akun Anda Dinonaktifkan</h3>
+              <p className="text-red-600 text-sm mt-1">
+                {userData?.reason || userData?.statusReason || "Akun Anda telah dinonaktifkan oleh Admin. Anda tidak dapat melakukan pembelian tiket untuk saat ini."}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Info Section - Dinamis dari Firestore */}
         <div className="mt-8">
@@ -230,28 +269,28 @@ const Profile = () => {
             </div>
             
             <div className="p-6 space-y-6">
-              {/* Avatar Preview */}
-              <div className="flex flex-col items-center gap-4">
-                <img
-                  src={editImageURL || userData?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData?.name || 'User'}`}
-                  alt="Preview"
-                  className="w-24 h-24 rounded-full object-cover border-4 border-slate-50 shadow-md"
-                  onError={(e) => {
-                    e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${editName || 'User'}`;
-                  }}
-                />
-              </div>
-
-              {/* Image URL Input */}
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700 flex items-center gap-2"><ImageIcon size={16}/> URL Foto Profil</label>
-                <input
-                  type="text"
-                  value={editImageURL}
-                  onChange={(e) => setEditImageURL(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#50589F] focus:ring-2 focus:ring-[#50589F]/20 transition-all outline-none text-sm"
-                  placeholder="https://contoh.com/foto.jpg (opsional)"
-                />
+              {/* Avatar Preview & File Upload */}
+              <div className="flex flex-col items-center gap-4 group">
+                <div className="relative">
+                  <img
+                    src={previewURL || editImageURL || userData?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData?.name || 'User'}`}
+                    alt="Preview"
+                    className="w-24 h-24 rounded-full object-cover border-4 border-slate-50 shadow-md group-hover:opacity-75 transition-opacity"
+                    onError={(e) => {
+                      e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${editName || 'User'}`;
+                    }}
+                  />
+                  <label className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer bg-black/40 rounded-full transition-opacity">
+                    <Camera className="text-white" size={24} />
+                    <input type="file" className="hidden" accept="image/*" onChange={(e) => {
+                      if (e.target.files[0]) {
+                        setImageFile(e.target.files[0]);
+                        setPreviewURL(URL.createObjectURL(e.target.files[0]));
+                      }
+                    }} />
+                  </label>
+                </div>
+                <p className="text-xs text-slate-400">Klik foto untuk mengganti dari perangkat Anda</p>
               </div>
 
               {/* Name Input */}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Calendar, MapPin, Star } from 'lucide-react';
+import { Search, Calendar, MapPin, Star, AlertTriangle } from 'lucide-react';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
@@ -181,6 +181,12 @@ const Home = () => {
                 </div>
                 <div className="p-5">
                   <h3 className="text-xl font-bold text-slate-800 mb-2">{event.title || event.name}</h3>
+                  {event.isOrganizerVerified === false && event.organizerName && (
+                    <div className="mb-3 flex items-center gap-1.5 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded-md w-fit">
+                      <AlertTriangle size={12} />
+                      Organizer Belum Terverifikasi
+                    </div>
+                  )}
                   <div className="flex flex-col gap-2 text-slate-500 text-sm">
                     <div className="flex items-center gap-2">
                       <Calendar size={16} className="text-light-navy" />

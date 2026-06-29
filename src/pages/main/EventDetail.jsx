@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { collection, doc, getDoc, getDocs, query, where, addDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
-import { ArrowLeft, MapPin, Calendar, Users, Star, QrCode, Loader2, CheckCircle, X } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Users, Star, QrCode, Loader2, CheckCircle, X, AlertTriangle } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 export default function EventDetail() {
@@ -51,6 +51,21 @@ export default function EventDetail() {
       if (!user) {
         Swal.fire('Error', 'Silakan login terlebih dahulu.', 'error');
         navigate('/login');
+        return;
+      }
+
+      // Check user status from Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      
+      if (userDocSnap.exists() && userDocSnap.data().status === 'Inactive') {
+        Swal.fire({
+          title: 'Akses Ditolak',
+          text: userDocSnap.data().reason || userDocSnap.data().statusReason || 'Akun Anda dinonaktifkan oleh Admin. Anda tidak dapat melakukan pembelian.',
+          icon: 'error'
+        });
+        setIsProcessing(false);
+        setShowModal(false);
         return;
       }
 
@@ -103,8 +118,14 @@ export default function EventDetail() {
             <div>
               <div className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-bold mb-4 uppercase tracking-wider">
                 <Users size={14} />
-                Penyelenggara: {event.organizer || 'REFP'}
+                Penyelenggara: {event.organizerName || event.organizer || 'REFP'}
               </div>
+              {event.isOrganizerVerified === false && event.organizerName && (
+                <div className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-xs font-bold mb-4 ml-2 uppercase tracking-wider border border-amber-200">
+                  <AlertTriangle size={14} />
+                  Belum Terverifikasi
+                </div>
+              )}
               <h1 className="text-3xl md:text-5xl font-extrabold text-slate-800 mb-4">{event.title || event.name}</h1>
               <div className="flex flex-wrap gap-4 text-slate-500 font-medium">
                 <div className="flex items-center gap-2">
